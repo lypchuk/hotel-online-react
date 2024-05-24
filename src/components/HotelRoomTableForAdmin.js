@@ -1,11 +1,19 @@
 import { React, useEffect, useState, useRef } from "react";
 import { TinyColor } from "@ctrl/tinycolor";
 import { SearchOutlined } from "@ant-design/icons";
-import { Button, ConfigProvider, Input, Space, Table, Tag } from "antd";
-
 import Highlighter from "react-highlight-words";
 import { Link } from "react-router-dom";
-
+import {
+  Button,
+  ConfigProvider,
+  Input,
+  Space,
+  Table,
+  Tag,
+  Popconfirm,
+  message,
+} from "antd";
+import { HotelRoomService } from "../services/hotelroomService";
 // const colors1 = ["#6253E1", "#04BEFE"];
 // const colors2 = ["#fc6076", "#ff9a44", "#ef9d43", "#e75516"];
 const colors3 = ["#40e495", "#30dd8a", "#2bb673"];
@@ -15,25 +23,32 @@ const getHoverColors = (colors) =>
 const getActiveColors = (colors) =>
   colors.map((color) => new TinyColor(color).darken(5).toString());
 
-//const api = "https://localhost:7127/api/Hotel/1";
-//const api = "/api/Hotel";
-//const api = "/api/Response";
-//const api = "https://localhost:7127/api/Response";
 //const api = "https://jsonplaceholder.typicode.com/todos";
 
-const api = process.env.REACT_APP_HOTEL_API + "HotelRoom/all";
+// const api = process.env.REACT_APP_HOTEL_API + "HotelRoom/all";
 
 export default function HotelRoomsTableForAdmin() {
   const [HotelRooms, setHotelRooms] = useState([]);
 
+  const deleteHandler = async (id) => {
+    // console.log(id);
+    const res = await HotelRoomService.delete(id);
+    if (res.status === 200) {
+      message.success("Hotel room deleted");
+      setHotelRooms(HotelRooms.filter((x) => x.id != id));
+    } else {
+      message.error("Something wrong");
+    }
+  };
+
+  const loadHotelRoom = async () => {
+    const res = await HotelRoomService.getAll();
+    // const data = await res.json();
+    setHotelRooms(res.data);
+  };
+
   useEffect(() => {
-    fetch(api)
-      .then((res) => res.json())
-      .then((data) => {
-        console.log("start data");
-        console.log(data);
-        setHotelRooms(data);
-      });
+    loadHotelRoom();
   }, []);
 
   // useEffect(() => {
@@ -154,7 +169,8 @@ export default function HotelRoomsTableForAdmin() {
         text
       ),
   });
-  const columns = [
+
+  const getColumns = (deleteHandler) => [
     {
       title: "Image",
       dataIndex: "imageUrl",
@@ -247,9 +263,23 @@ export default function HotelRoomsTableForAdmin() {
       dataIndex: "action",
       render: (_, record) => (
         <Space size="middle">
-          <a>Show</a>
-          <a>Edit</a>
-          <a>Delete</a>
+          {/* <Button>Show</Button> */}
+
+          <Link to={`edit/${record.id}`}>
+            <Button>Edit</Button>
+          </Link>
+
+          <Popconfirm
+            title="Delete the hotel room"
+            description={`Are you sure to delete this ${record.name}?`}
+            onConfirm={() => deleteHandler(record.id)}
+            okText="Yes"
+            cancelText="No"
+          >
+            <Button>Delete</Button>
+          </Popconfirm>
+
+          {/* <a>Delete</a> */}
         </Space>
       ),
     },
@@ -324,7 +354,7 @@ export default function HotelRoomsTableForAdmin() {
       </Space>
 
       <Table
-        columns={columns}
+        columns={getColumns(deleteHandler)}
         dataSource={HotelRooms}
         pagination={{ pageSize: 4 }}
       />
