@@ -14,22 +14,29 @@ import TextArea from "antd/es/input/TextArea";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import { HotelRoomService } from "../services/hotelroomService";
+import { useForm } from "antd/es/form/Form";
 
-const api = process.env.REACT_APP_HOTEL_API + "HotelRoom";
+//const api = process.env.REACT_APP_HOTEL_API + "HotelRoom";
 
 export default function HotelRoomForm() {
   const [TypeRoom, setTypeRoom] = useState([]);
   const [NumberOfBeds, setNumberOfBeds] = useState([]);
   const [NumberOfSeats, setNumberOfSeats] = useState([]);
 
+  const [hotelRoom, setHotelRoom] = useState(null);
+
   const [editMode, setEditeMode] = useState(false);
 
   const params = useParams();
   const [form] = Form.useForm();
+
   const navigate = useNavigate();
 
   const onFinish = async (values) => {
     if (editMode) {
+      values.id = hotelRoom.id;
+      //values.ratingNumber = hotelRoom.ratingNumber;
+
       console.log("Success:", values);
       // values.image = values.image.originFileObj;
       const res = await HotelRoomService.edit(values);
@@ -134,12 +141,14 @@ export default function HotelRoomForm() {
       const res = await HotelRoomService.get(params.id);
       console.log(params.id);
       console.log(res.data);
-      form.setFieldValue(res.data);
+      setHotelRoom(res.data);
+      form.setFieldsValue(res.data);
+      //form.setFieldsValue({ name: "name", value: "name" });
     }
   };
 
   const getAllNumberOfSeats = async () => {
-    var response = await HotelRoomService.getNumberOfSeats();
+    const response = await HotelRoomService.getNumberOfSeats();
     // console.log(response);
     const option = response.data.map((x) => {
       return { label: x.number, value: x.id };
@@ -148,7 +157,7 @@ export default function HotelRoomForm() {
   };
 
   const getAllNumberOfBeds = async () => {
-    var response = await HotelRoomService.getNumberOfBeds();
+    const response = await HotelRoomService.getNumberOfBeds();
     // console.log(response);
     const option = response.data.map((x) => {
       return { label: x.number, value: x.id };
@@ -157,7 +166,7 @@ export default function HotelRoomForm() {
   };
 
   async function getAllTypeRoom() {
-    var response = await HotelRoomService.getTypeRoom();
+    const response = await HotelRoomService.getTypeRoom();
     // console.log(response);
     const option = response.data.map((x) => {
       return { label: x.name, value: x.id };
@@ -393,7 +402,7 @@ export default function HotelRoomForm() {
 
         <Form.Item style={{ textAlign: "center" }}>
           <Button type="primary" htmlType="submit">
-            Submit
+            {editMode ? "Edit" : "Create"}
           </Button>
         </Form.Item>
       </Form>

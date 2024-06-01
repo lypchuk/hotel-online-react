@@ -19,6 +19,7 @@ const App = () => {
         style={{
           padding: "0 48px",
           marginTop: 10,
+          minWidth: 576,
         }}
       >
         <div

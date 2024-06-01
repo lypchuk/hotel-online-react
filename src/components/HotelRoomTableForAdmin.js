@@ -2,7 +2,7 @@ import { React, useEffect, useState, useRef } from "react";
 import { TinyColor } from "@ctrl/tinycolor";
 import { SearchOutlined } from "@ant-design/icons";
 import Highlighter from "react-highlight-words";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import {
   Button,
   ConfigProvider,
@@ -14,6 +14,7 @@ import {
   message,
 } from "antd";
 import { HotelRoomService } from "../services/hotelroomService";
+import { userService } from "../services/userService";
 // const colors1 = ["#6253E1", "#04BEFE"];
 // const colors2 = ["#fc6076", "#ff9a44", "#ef9d43", "#e75516"];
 const colors3 = ["#40e495", "#30dd8a", "#2bb673"];
@@ -205,6 +206,10 @@ export default function HotelRoomsTableForAdmin() {
       dataIndex: "description",
       key: "description",
       ...getColumnSearchProps("description"),
+      render: (text) =>
+        text.length > 20 ? text.substring(0, 20) + "..." : text,
+
+      //
       sorter: (a, b) => a.description.length - b.description.length,
     },
     {
@@ -265,6 +270,10 @@ export default function HotelRoomsTableForAdmin() {
         <Space size="middle">
           {/* <Button>Show</Button> */}
 
+          <Link to={`../show/${record.id}`}>
+            <Button>Show</Button>
+          </Link>
+
           <Link to={`edit/${record.id}`}>
             <Button>Edit</Button>
           </Link>
@@ -284,6 +293,9 @@ export default function HotelRoomsTableForAdmin() {
       ),
     },
   ];
+
+  if (userService.getRoleStorage() != "admin") return <Navigate to="/" />;
+
   return (
     <>
       <Space>
