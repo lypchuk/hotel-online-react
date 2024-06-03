@@ -27,7 +27,7 @@ root.render(
         <Route path="register" element={<Register />} />
 
         <Route path="foradminlist/create" element={<HotelRoomForm />} />
-        {/* <Route path="foradminlist/edit/:id" element={<HotelRoomForm />} /> */}
+        <Route path="foradminlist/edit/:id" element={<HotelRoomForm />} />
         <Route path="foradminlist/show/:id" element={<Show />} />
         <Route path="show/:id" element={<Show />} />
         <Route path="order/:id" element={<Order />} />

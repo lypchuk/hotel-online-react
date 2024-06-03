@@ -25,7 +25,8 @@ const App = () => {
         <div
           style={{
             background: colorBgContainer,
-            minHeight: 300,
+            minHeight: 700,
+            //minHeight: "1000px",
             padding: 24,
             borderRadius: borderRadiusLG,
           }}

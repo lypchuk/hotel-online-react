@@ -34,6 +34,7 @@ export default function Show() {
             marginRight: "auto",
             minWidth: 350,
             maxHeight: 500,
+            maxWidth: 100,
           }}
           cover={
             <img
@@ -62,6 +63,7 @@ export default function Show() {
             title={hotelRoom.name}
             description={`Description: ${hotelRoom.description}`}
           />
+          <div>Price: {hotelRoom.price}</div>
           <div style={{ display: "flex", justifyContent: "space-around" }}>
             <div>Beds: {hotelRoom.numberOfBedsNumber}</div>
             <div>Seats: {hotelRoom.numberOfSeatsNumber}</div>

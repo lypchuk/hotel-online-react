@@ -158,6 +158,7 @@ export default function Order() {
             marginLeft: "auto",
             marginRight: "auto",
             minWidth: 350,
+            maxWidth: 100,
           }}
           cover={
             <img
